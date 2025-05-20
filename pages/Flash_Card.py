@@ -1,4 +1,6 @@
 import streamlit as st
+from gtts import gTTS
+from io import BytesIO
 
 # --- Flashcard Data ---
 flashcards = [
@@ -22,18 +24,20 @@ flashcards = [
     }
 ]
 
-# --- Session State ---
+# --- Initialize session state ---
 if "card_index" not in st.session_state:
     st.session_state.card_index = 0
+if "play_audio" not in st.session_state:
+    st.session_state.play_audio = True  # Play on first load
 
-# --- Navigation ---
+# --- Function to go to next word ---
 def go_next():
     st.session_state.card_index = (st.session_state.card_index + 1) % len(flashcards)
+    st.session_state.play_audio = True
 
-# --- Current Flashcard ---
+# --- Display current flashcard ---
 current = flashcards[st.session_state.card_index]
 
-# --- Display Word ---
 st.markdown(f"<h1 style='text-align: center; font-size: 60px;'>{current['word']}</h1>", unsafe_allow_html=True)
 
 # --- POS and Pronunciation ---
@@ -51,6 +55,20 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# --- Navigation Button ---
+# --- Audio playback ---
+if st.session_state.play_audio:
+    tts = gTTS(current["word"])
+    audio_fp = BytesIO()
+    tts.write_to_fp(audio_fp)
+    audio_fp.seek(0)
+    st.audio(audio_fp, format="audio/mp3")
+    st.session_state.play_audio = False
+
+# --- Replay button ---
+if st.button("🔁 Replay Audio"):
+    st.session_state.play_audio = True
+    st.experimental_rerun()
+
+# --- Next button ---
 st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
 st.button("➡️ Next", key="next_button", on_click=go_next)
