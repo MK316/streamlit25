@@ -1,35 +1,14 @@
 import streamlit as st
+import pandas as pd
 from gtts import gTTS
 from io import BytesIO
 
-# --- Flashcard Data ---
-flashcards = [
-    {
-        "word": "Python",
-        "pos": "noun",
-        "pronunciation": "/ˈpaɪθɑn/",
-        "meaning": "A popular programming language known for readability and versatility."
-    },
-    {
-        "word": "forest",
-        "pos": "noun",
-        "pronunciation": "/ˈfɔːrɪst/",
-        "meaning": "A large area covered chiefly with trees and undergrowth."
-    },
-    {
-        "word": "imagine",
-        "pos": "verb",
-        "pronunciation": "/ɪˈmædʒɪn/",
-        "meaning": "To form a mental picture or concept of something not present."
-    }
-]
+# --- Load data from CSV ---
+@st.cache_data
+def load_flashcards():
+    return pd.read_csv("data/word_list.csv")  # adjust path if needed
 
-# --- GitHub Image URLs for each word (replace with your real links) ---
-image_urls = {
-    "Python": "https://raw.githubusercontent.com/your-username/your-repo/main/images/python.png",
-    "forest": "https://raw.githubusercontent.com/your-username/your-repo/main/images/forest.png",
-    "imagine": "https://raw.githubusercontent.com/your-username/your-repo/main/images/imagine.png"
-}
+df = load_flashcards()
 
 # --- Initialize session state ---
 if "card_index" not in st.session_state:
@@ -39,36 +18,41 @@ if "play_audio" not in st.session_state:
 if "show_image" not in st.session_state:
     st.session_state.show_image = False
 
-# --- Function to go to next flashcard ---
+# --- Go to next card ---
 def go_next():
-    st.session_state.card_index = (st.session_state.card_index + 1) % len(flashcards)
+    st.session_state.card_index = (st.session_state.card_index + 1) % len(df)
     st.session_state.play_audio = True
-    st.session_state.show_image = False  # reset image on next
+    st.session_state.show_image = False
 
-# --- Get current flashcard ---
-current = flashcards[st.session_state.card_index]
+# --- Current flashcard data ---
+current = df.iloc[st.session_state.card_index]
+word = current["Word"]
+pos = current["POS"]
+pron = current["Pronunciation"]
+meaning = current.get("Meaning", "📝 No meaning provided.")
+image_url = current["Image"]
 
-# --- Display the word ---
-st.markdown(f"<h1 style='text-align: center; font-size: 60px;'>{current['word']}</h1>", unsafe_allow_html=True)
+# --- Display word ---
+st.markdown(f"<h1 style='text-align: center; font-size: 60px;'>{word}</h1>", unsafe_allow_html=True)
 
-# --- POS and Pronunciation ---
+# --- POS & Pronunciation ---
 st.markdown(f"""
 <p style='text-align: center; font-size: 22px; color: gray;'>🌱 
-    <em>{current['pos']}</em> &nbsp; • &nbsp; <span style='font-family: serif;'>{current['pronunciation']}</span>
+    <em>{pos}</em> &nbsp; • &nbsp; <span style='font-family: serif;'>{pron}</span>
 </p>
 """, unsafe_allow_html=True)
 
-# --- Meaning Box ---
+# --- Meaning ---
 st.markdown(f"""
 <div style='padding: 20px; background-color: #f0f8ff; border-left: 6px solid #008cba;
             border-radius: 5px; font-size: 20px; margin-bottom: 30px;'>
-    <strong>🎶 Meaning:</strong> {current['meaning']}
+    <strong>🎶 Meaning:</strong> {meaning}
 </div>
 """, unsafe_allow_html=True)
 
-# --- Audio playback (only once when card is loaded) ---
+# --- Audio playback ---
 if st.session_state.play_audio:
-    tts = gTTS(current["word"])
+    tts = gTTS(word)
     audio_fp = BytesIO()
     tts.write_to_fp(audio_fp)
     audio_fp.seek(0)
@@ -79,11 +63,10 @@ if st.session_state.play_audio:
 if st.button("🖼️ Show Image"):
     st.session_state.show_image = True
 
-# --- Display image if button clicked ---
-if st.session_state.show_image and current["word"] in image_urls:
-    st.image(image_urls[current["word"]], use_column_width=True)
+# --- Display image ---
+if st.session_state.show_image:
+    st.image(image_url, use_column_width=True)
 
-# --- Spacer and Next button ---
+# --- Next button ---
 st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
 st.button("➡️ Next", key="next_button", on_click=go_next)
-
