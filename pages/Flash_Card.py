@@ -2,10 +2,26 @@ import streamlit as st
 
 # --- Flashcard data ---
 flashcards = [
-    {"word": "Python", "meaning": "A popular programming language known for readability and versatility."},
-    {"word": "forest", "meaning": "A large area covered chiefly with trees and undergrowth."},
-    {"word": "imagine", "meaning": "To form a mental picture or concept of something not present."}
+    {
+        "word": "Python",
+        "pos": "noun",
+        "pronunciation": "/ˈpaɪθɑn/",
+        "meaning": "A popular programming language known for readability and versatility."
+    },
+    {
+        "word": "forest",
+        "pos": "noun",
+        "pronunciation": "/ˈfɔːrɪst/",
+        "meaning": "A large area covered chiefly with trees and undergrowth."
+    },
+    {
+        "word": "imagine",
+        "pos": "verb",
+        "pronunciation": "/ɪˈmædʒɪn/",
+        "meaning": "To form a mental picture or concept of something not present."
+    }
 ]
+
 
 # --- Initialize session state ---
 if "card_index" not in st.session_state:
