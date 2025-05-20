@@ -42,7 +42,7 @@ st.markdown(f"<h1 style='text-align: center; font-size: 60px;'>{current['word']}
 
 # --- POS and Pronunciation ---
 st.markdown(f"""
-<p style='text-align: center; font-size: 22px; color: gray;'>
+<p style='text-align: center; font-size: 22px; color: gray;'>🌱 
     <em>{current['pos']}</em> &nbsp; • &nbsp; <span style='font-family: serif;'>{current['pronunciation']}</span>
 </p>
 """, unsafe_allow_html=True)
