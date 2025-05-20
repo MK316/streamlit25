@@ -65,3 +65,7 @@ if st.button("✅ Submit"):
         st.session_state.replay_audio = True
     else:
         st.error("❌ Not quite. Check your spelling, punctuation, and capitalization.")
+
+
+st.markdown("---")
+st.markdown("[App code to copy](https://github.com/MK316/streamlit25/blob/main/pages/Dictation.py)")
