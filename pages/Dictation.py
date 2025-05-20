@@ -16,38 +16,43 @@ if "user_input" not in st.session_state:
     st.session_state.user_input = ""
 if "submitted" not in st.session_state:
     st.session_state.submitted = False
-if "show_audio" not in st.session_state:
-    st.session_state.show_audio = True
+if "replay_audio" not in st.session_state:
+    st.session_state.replay_audio = True  # allow audio to play initially
 
 st.title("🎧 Dictation Practice")
-st.markdown("Listen to the sentence and type exactly what you hear, including **punctuation** and **capitalization**.")
+st.markdown("Type the sentence you hear. Make sure to include **punctuation** and **capitalization**.")
 
-# --- Stop when all sentences are done ---
+# --- Stop when done ---
 if st.session_state.index >= len(sentences):
     st.success("✅ You’ve completed all the sentences!")
     if st.button("🔄 Start Over"):
         st.session_state.index = 0
         st.session_state.user_input = ""
         st.session_state.submitted = False
-        st.session_state.show_audio = True
+        st.session_state.replay_audio = True
     st.stop()
 
 # --- Get current sentence ---
 current_sentence = sentences[st.session_state.index]
 
-# --- Only generate and play audio when needed ---
-if st.session_state.show_audio:
+# --- Replay or initial audio ---
+if st.session_state.replay_audio:
     tts = gTTS(current_sentence)
     audio_fp = BytesIO()
     tts.write_to_fp(audio_fp)
     audio_fp.seek(0)
     st.audio(audio_fp, format="audio/mp3")
-    st.session_state.show_audio = False  # prevent re-generating unless next sentence
+    st.session_state.replay_audio = False
 
-# --- Input box that retains text ---
-st.session_state.user_input = st.text_input("Type what you heard:", value=st.session_state.user_input)
+# --- Replay button ---
+if st.button("🔁 Replay Audio"):
+    st.session_state.replay_audio = True
+    st.experimental_rerun()
 
-# --- Submit and check answer ---
+# --- Input box ---
+st.session_state.user_input = st.text_input("✏️ Type what you heard:", value=st.session_state.user_input)
+
+# --- Submit button ---
 if st.button("✅ Submit"):
     st.session_state.submitted = True
     if st.session_state.user_input.strip() == current_sentence:
@@ -55,10 +60,7 @@ if st.button("✅ Submit"):
         st.session_state.index += 1
         st.session_state.user_input = ""
         st.session_state.submitted = False
-        st.session_state.show_audio = True  # allow next sentence audio
+        st.session_state.replay_audio = True
+        st.experimental_rerun()
     else:
-        st.error("❌ There's a mistake. Please check your grammar and punctuation.")
-
-# --- Replay button ---
-if st.button("🔁 Replay Audio"):
-    st.session_state.show_audio = True
+        st.error("❌ Not quite. Check your spelling, punctuation, and capitalization.")
