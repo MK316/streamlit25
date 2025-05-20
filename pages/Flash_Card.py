@@ -64,10 +64,6 @@ if st.session_state.play_audio:
     st.audio(audio_fp, format="audio/mp3")
     st.session_state.play_audio = False
 
-# --- Replay button ---
-if st.button("🔁 Replay Audio"):
-    st.session_state.play_audio = True
-    st.experimental_rerun()
 
 # --- Next button ---
 st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
