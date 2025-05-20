@@ -6,7 +6,7 @@ from io import BytesIO
 # --- Load data from CSV ---
 @st.cache_data
 def load_flashcards():
-    return pd.read_csv("data/word_list.csv")  # adjust path if needed
+    return pd.read_csv("https://raw.githubusercontent.com/MK316/streamlit25/refs/heads/main/data/flashcard.csv")  # adjust path if needed
 
 df = load_flashcards()
 
