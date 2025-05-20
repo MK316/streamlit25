@@ -44,10 +44,11 @@ if st.session_state.replay_audio:
     st.audio(audio_fp, format="audio/mp3")
     st.session_state.replay_audio = False
 
-# --- Replay button ---
+# --- Replay button (1-click fix) ---
 if st.button("🔁 Replay Audio"):
     st.session_state.replay_audio = True
-    st.experimental_rerun()
+    st.experimental_rerun()  # <- forces immediate refresh
+
 
 # --- Input box ---
 st.session_state.user_input = st.text_input("✏️ Type what you heard:", value=st.session_state.user_input)
