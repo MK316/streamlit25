@@ -65,7 +65,7 @@ if st.button("🖼️ Show Image"):
 
 # --- Display image ---
 if st.session_state.show_image:
-    st.image(image_url, use_column_width=True)
+    st.image(image_url, use_container_width=True)
 
 # --- Next button ---
 st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
