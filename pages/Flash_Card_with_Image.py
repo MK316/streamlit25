@@ -62,6 +62,10 @@ if st.session_state.play_audio:
     st.audio(audio_fp, format="audio/mp3")
     st.session_state.play_audio = False
 
+# --- Next Button ---
+st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
+st.button("➡️ Next", key="next_button", on_click=go_next)
+
 # --- Show image button ---
 if st.button("🖼️ Show Image"):
     st.session_state.show_image = True
@@ -70,6 +74,4 @@ if st.button("🖼️ Show Image"):
 if st.session_state.show_image:
     st.image(image_url, use_container_width=True)
 
-# --- Next Button ---
-st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
-st.button("➡️ Next", key="next_button", on_click=go_next)
+
