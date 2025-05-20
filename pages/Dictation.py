@@ -2,7 +2,7 @@ import streamlit as st
 from gtts import gTTS
 from io import BytesIO
 
-# --- Sentences to dictate ---
+# --- List of sentences for dictation ---
 sentences = [
     "The sun is shining brightly.",
     "She goes to school every morning.",
@@ -17,12 +17,13 @@ if "user_input" not in st.session_state:
 if "submitted" not in st.session_state:
     st.session_state.submitted = False
 if "replay_audio" not in st.session_state:
-    st.session_state.replay_audio = True  # allow audio to play initially
+    st.session_state.replay_audio = True  # Play first audio on load
 
+# --- Title and Instructions ---
 st.title("🎧 Dictation Practice")
-st.markdown("Type the sentence you hear. Make sure to include **punctuation** and **capitalization**.")
+st.markdown("Listen to the sentence and type exactly what you hear, including **punctuation** and **capitalization**.")
 
-# --- Stop when done ---
+# --- End of all sentences ---
 if st.session_state.index >= len(sentences):
     st.success("✅ You’ve completed all the sentences!")
     if st.button("🔄 Start Over"):
@@ -35,7 +36,7 @@ if st.session_state.index >= len(sentences):
 # --- Get current sentence ---
 current_sentence = sentences[st.session_state.index]
 
-# --- Replay or initial audio ---
+# --- Generate and play audio (only if flag is True) ---
 if st.session_state.replay_audio:
     tts = gTTS(current_sentence)
     audio_fp = BytesIO()
@@ -44,16 +45,16 @@ if st.session_state.replay_audio:
     st.audio(audio_fp, format="audio/mp3")
     st.session_state.replay_audio = False
 
-# --- Replay button (1-click fix) ---
+# --- Replay Audio Button ---
 if st.button("🔁 Replay Audio"):
     st.session_state.replay_audio = True
-    st.experimental_rerun()  # <- forces immediate refresh
 
+# --- Input box that retains previous input ---
+st.session_state.user_input = st.text_input(
+    "✏️ Type what you heard:", value=st.session_state.user_input
+)
 
-# --- Input box ---
-st.session_state.user_input = st.text_input("✏️ Type what you heard:", value=st.session_state.user_input)
-
-# --- Submit button ---
+# --- Submit Button and Answer Check ---
 if st.button("✅ Submit"):
     st.session_state.submitted = True
     if st.session_state.user_input.strip() == current_sentence:
@@ -62,6 +63,5 @@ if st.button("✅ Submit"):
         st.session_state.user_input = ""
         st.session_state.submitted = False
         st.session_state.replay_audio = True
-        st.experimental_rerun()
     else:
         st.error("❌ Not quite. Check your spelling, punctuation, and capitalization.")
