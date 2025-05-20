@@ -1,6 +1,6 @@
 import streamlit as st
 
-# --- Flashcard data ---
+# --- Flashcard Data ---
 flashcards = [
     {
         "word": "Python",
@@ -22,19 +22,28 @@ flashcards = [
     }
 ]
 
-
-# --- Initialize session state ---
+# --- Session State ---
 if "card_index" not in st.session_state:
     st.session_state.card_index = 0
 
-# --- Handle Next button (must be done before render) ---
+# --- Navigation ---
 def go_next():
     st.session_state.card_index = (st.session_state.card_index + 1) % len(flashcards)
 
-# --- Display flashcard ---
+# --- Current Flashcard ---
 current = flashcards[st.session_state.card_index]
+
+# --- Display Word ---
 st.markdown(f"<h1 style='text-align: center; font-size: 60px;'>{current['word']}</h1>", unsafe_allow_html=True)
 
+# --- POS and Pronunciation ---
+st.markdown(f"""
+<p style='text-align: center; font-size: 22px; color: gray;'>
+    <em>{current['pos']}</em> &nbsp; • &nbsp; <span style='font-family: serif;'>{current['pronunciation']}</span>
+</p>
+""", unsafe_allow_html=True)
+
+# --- Meaning ---
 st.markdown(f"""
 <div style='padding: 20px; background-color: #f0f8ff; border-left: 6px solid #008cba;
             border-radius: 5px; font-size: 20px; margin-bottom: 30px;'>
@@ -42,6 +51,6 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# --- Add space and Next button ---
+# --- Navigation Button ---
 st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
 st.button("➡️ Next", key="next_button", on_click=go_next)
