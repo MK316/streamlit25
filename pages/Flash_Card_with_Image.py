@@ -3,10 +3,13 @@ import pandas as pd
 from gtts import gTTS
 from io import BytesIO
 
-# --- Load data from CSV ---
+# --- Load CSV from GitHub ---
 @st.cache_data
 def load_flashcards():
-    return pd.read_csv("https://raw.githubusercontent.com/MK316/streamlit25/refs/heads/main/data/flashcard.csv")  # adjust path if needed
+    url = "https://raw.githubusercontent.com/MK316/streamlit25/main/data/flashcard.csv"
+    df = pd.read_csv(url, quotechar='"')
+    df.columns = df.columns.str.strip()  # remove whitespace from column names
+    return df
 
 df = load_flashcards()
 
@@ -24,7 +27,7 @@ def go_next():
     st.session_state.play_audio = True
     st.session_state.show_image = False
 
-# --- Current flashcard data ---
+# --- Get current card data ---
 current = df.iloc[st.session_state.card_index]
 word = current["Word"]
 pos = current["POS"]
@@ -42,7 +45,7 @@ st.markdown(f"""
 </p>
 """, unsafe_allow_html=True)
 
-# --- Meaning ---
+# --- Meaning Box ---
 st.markdown(f"""
 <div style='padding: 20px; background-color: #f0f8ff; border-left: 6px solid #008cba;
             border-radius: 5px; font-size: 20px; margin-bottom: 30px;'>
@@ -50,7 +53,7 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# --- Audio playback ---
+# --- Play audio once per card load ---
 if st.session_state.play_audio:
     tts = gTTS(word)
     audio_fp = BytesIO()
@@ -59,16 +62,14 @@ if st.session_state.play_audio:
     st.audio(audio_fp, format="audio/mp3")
     st.session_state.play_audio = False
 
-# --- Next button ---
-st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
-st.button("➡️ Next", key="next_button", on_click=go_next)
-
 # --- Show image button ---
 if st.button("🖼️ Show Image"):
     st.session_state.show_image = True
 
-# --- Display image ---
+# --- Display image if triggered ---
 if st.session_state.show_image:
     st.image(image_url, use_container_width=True)
 
-
+# --- Next Button ---
+st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
+st.button("➡️ Next", key="next_button", on_click=go_next)
