@@ -75,4 +75,4 @@ if st.session_state.show_image:
     st.image(image_url, width=300)
 
 st.markdown("---")
-st.markdown("[Codefile](https://github.com/MK316/streamlit25/blob/main/pages/Flash_Card_with_Image.py)")
+st.markdown("[Code file](https://github.com/MK316/streamlit25/blob/main/pages/Flash_Card_with_Image.py)")
