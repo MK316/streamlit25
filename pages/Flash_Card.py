@@ -68,3 +68,7 @@ if st.session_state.play_audio:
 # --- Next button ---
 st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
 st.button("➡️ Next", key="next_button", on_click=go_next)
+
+st.markdown("---")
+st.markdown("[Code file](https://github.com/MK316/streamlit25/blob/main/pages/Flash_Card.py)")
+            
