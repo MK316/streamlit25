@@ -4,6 +4,8 @@ import re
 from io import BytesIO
 
 st.title("🗣️ Sentence-by-Sentence Text-to-Speech")
+st.markdown("[Code link](https://github.com/MK316/streamlit25/blob/main/pages/Text-to-Sentence-audio.py)")
+st.markdown("---")
 
 # --- Input area ---
 text = st.text_area("✍️ Enter your text below:", height=200)
