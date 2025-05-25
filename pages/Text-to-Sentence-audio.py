@@ -11,7 +11,7 @@ text = st.text_area("✍️ Enter your text below:", height=200)
 if st.button("🔊 Generate Sentence Audio"):
     if text.strip():
         # Step 1: Split into sentences
-        sentences = re.split(r'(?<=[.!?]) +', text.strip())
+        sentences = re.split(r'(?<=[.!?])\s+', text.strip())
 
         st.info(f"{len(sentences)} sentence(s) found.")
 
